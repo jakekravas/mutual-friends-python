@@ -9,6 +9,10 @@ class LinkedList:
     def __init__(self):
         self._head = None
 
+    def add(self, new):
+        new._next = self._head
+        self._head = new
+
     def find(self, name):
         if not self._head:
             return None
