@@ -9,6 +9,19 @@ class LinkedList:
     def __init__(self):
         self._head = None
 
+    def find(self, name):
+        if not self._head:
+            return None
+
+        cur = self._head
+
+        while cur:
+            if cur._name == name:
+                return cur
+            cur = cur._next
+
+        return None
+
     def print_list(self):
         cur = self._head
         while cur:
