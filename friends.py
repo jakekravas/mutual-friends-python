@@ -1,21 +1,23 @@
-from linked_list import *
+"""
+    File: friends.py
+    Author: Jake Kravas
+    Purpose: Display mutual friends of
+    two user-inputted names, with friend
+    data coming from user-inputted file
+"""
 
-class Node:
-    def __init__(self, name):
-        self._name = name
-        self._friends = LinkedList()
-        self._next = None
+from linked_list import *
 
 def get_friend_data():
     """
-        returns linked list of friends from data from user-inputted file
+        Returns linked list of friends from data from user-inputted file
     """
     filename = input('Input file: ')
-    # filename = 'in10.txt'
     file = open(filename, 'r')
 
     lines = file.readlines()
 
+    # linked list that will hold names from file
     name_list = LinkedList()
 
     for line in lines:
@@ -44,48 +46,72 @@ def get_friend_data():
         friend_1_node._friends.add(Node(friend_2_name))
         friend_2_node._friends.add(Node(friend_1_name))
 
+    file.close()
     return name_list
 
 
-def display_mutual_friends(name_1_friends, name_2_friends):
+def display_mutual_friends(name_1_node, name_2_node):
+    # if name_1_node or name_2_node is None, exit the function
+    if not name_1_node or not name_2_node:
+        return
 
-    mutual_friends_ll = LinkedList()
+    # linked list that will hold mutual friends
+    mutual_friends = LinkedList()
 
-    name_1_cur = name_1_friends._friends._head
+    # head of name_1_node
+    name_1_cur = name_1_node._friends._head
 
     while name_1_cur:
-        n1_friend = name_1_cur._name
 
-        name_2_cur = name_2_friends._friends._head
+        # head of name_2_node
+        name_2_cur = name_2_node._friends._head
+
         while name_2_cur:
 
-            if name_2_cur._name == n1_friend:
-                mutual_friends_ll.add(Node(n1_friend))
+            # if name of current name_2 friend == name
+            # of current name_1 friend, add a node
+            # containing this name to mutual_friends
+            if name_2_cur._name == name_1_cur._name:
+                mutual_friends.add(Node(name_1_cur._name))
+
             name_2_cur = name_2_cur._next
 
         name_1_cur = name_1_cur._next
 
-    if not mutual_friends_ll.is_empty():
+    # if there are any mutual friends, sort and print them
+    if not mutual_friends.is_empty():
+        # linked list of mutual friends sorted in alphabetical order
+        mutual_friends_sorted = mutual_friends.sort()
+
+        # print mutual friends from mutual_friends_sorted
         print('Friends in common:')
-        mutual_friends_ll.print_list()
+        mutual_friends_sorted.print_list()
 
 
-def get_friends_from_name_input(name_list):
+def get_names_from_input(name_list):
     name_1 = input('Name 1: ')
     name_2 = input('Name 2: ')
-    # name_1 = 'William'
-    # name_2 = 'Abigail'
 
-    name_1_friends = name_list.find(name_1)
-    name_2_friends = name_list.find(name_2)
+    # get nodes of friends for each name input
+    name_1_node = name_list.find(name_1)
+    name_2_node = name_list.find(name_2)
 
-    return name_1_friends, name_2_friends
+    # if a name is invalid, display error
+    if not name_1_node:
+        print('ERROR: Unknown person ' + name_1)
+    if not name_2_node:
+        print('ERROR: Unknown person ' + name_2)
+
+    return name_1_node, name_2_node
 
 
 def main():
+    
     name_list = get_friend_data()
-    name_1_friends, name_2_friends = get_friends_from_name_input(name_list)
-    display_mutual_friends(name_1_friends, name_2_friends)
+
+    name_1_node, name_2_node = get_names_from_input(name_list)
+
+    display_mutual_friends(name_1_node, name_2_node)
 
 
 main()
